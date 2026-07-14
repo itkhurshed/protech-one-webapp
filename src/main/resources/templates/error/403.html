@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><title>Access Denied — ProTech One</title>
+<link rel="stylesheet" th:href="@{/css/main.css}"/><link rel="stylesheet" th:href="@{/css/components.css}"/>
+</head>
+<body>
+<div class="auth-wrap"><div class="auth-card" style="text-align:center;">
+  <div class="home-logo">403</div>
+  <p class="auth-subtitle" th:text="${message} ?: 'You do not have permission to view this page.'">Forbidden</p>
+  <a href="/dashboard" class="btn btn-primary">Back to Dashboard</a>
+</div></div>
+</body>
+</html>

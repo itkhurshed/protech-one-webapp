@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Notifications — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header"><div><h2>Notifications</h2></div></div>
+      <div class="card">
+        <div class="card-body">
+          <div th:if="${#lists.isEmpty(notifications)}" class="empty-state"><h6>No notifications</h6></div>
+          <div th:each="n : ${notifications}" class="list-row">
+            <div>
+              <div style="font-weight:600;" th:text="${n.title}">Title</div>
+              <div style="font-size:12.5px;color:var(--text-secondary);" th:text="${n.message}">Message</div>
+            </div>
+            <form th:if="${!n.isRead}" th:action="@{/notifications/{id}/read(id=${n.id})}" method="post">
+              <button type="submit" class="btn btn-sm btn-outline">Mark read</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

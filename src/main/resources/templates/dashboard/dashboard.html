@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Dashboard — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='dashboard')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header">
+        <div><h2>Executive Dashboard</h2><p class="breadcrumb-text">A real-time snapshot of your business</p></div>
+      </div>
+      <th:block th:replace="~{fragments/layout :: alerts}"></th:block>
+
+      <div class="kpi-grid">
+        <div class="kpi-card"><div><div class="kpi-label">Today's Sales</div><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(summary.todaySales,1,'COMMA',2,'POINT')}">$0.00</div></div><div class="kpi-icon bg-icon-primary"><i class="fa-solid fa-cash-register"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Monthly Sales</div><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(summary.monthlySales,1,'COMMA',2,'POINT')}">$0.00</div></div><div class="kpi-icon bg-icon-success"><i class="fa-solid fa-chart-line"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Gross Profit</div><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(summary.grossProfit,1,'COMMA',2,'POINT')}">$0.00</div></div><div class="kpi-icon bg-icon-info"><i class="fa-solid fa-sack-dollar"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Monthly Expenses</div><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(summary.monthlyExpenses,1,'COMMA',2,'POINT')}">$0.00</div></div><div class="kpi-icon bg-icon-danger"><i class="fa-solid fa-money-bill-wave"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Cash Balance</div><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(summary.cashBalance,1,'COMMA',2,'POINT')}">$0.00</div></div><div class="kpi-icon bg-icon-primary"><i class="fa-solid fa-wallet"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Outstanding Receivables</div><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(summary.outstandingReceivables,1,'COMMA',2,'POINT')}">$0.00</div></div><div class="kpi-icon bg-icon-warning"><i class="fa-solid fa-file-invoice-dollar"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Outstanding Payables</div><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(summary.outstandingPayables,1,'COMMA',2,'POINT')}">$0.00</div></div><div class="kpi-icon bg-icon-warning"><i class="fa-solid fa-file-invoice"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Inventory Value</div><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(summary.inventoryValue,1,'COMMA',2,'POINT')}">$0.00</div></div><div class="kpi-icon bg-icon-info"><i class="fa-solid fa-boxes-stacked"></i></div></div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card"><div><div class="kpi-label">Customers</div><div class="kpi-value" th:text="${summary.customerCount}">0</div></div><div class="kpi-icon bg-icon-primary"><i class="fa-solid fa-users"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Suppliers</div><div class="kpi-value" th:text="${summary.supplierCount}">0</div></div><div class="kpi-icon bg-icon-primary"><i class="fa-solid fa-truck-field"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Employees</div><div class="kpi-value" th:text="${summary.employeeCount}">0</div></div><div class="kpi-icon bg-icon-primary"><i class="fa-solid fa-id-badge"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Low-Stock Products</div><div class="kpi-value" th:text="${summary.lowStockCount}">0</div></div><div class="kpi-icon bg-icon-danger"><i class="fa-solid fa-triangle-exclamation"></i></div></div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="card">
+          <div class="card-header"><h6>Sales by Month</h6></div>
+          <div class="card-body">
+            <div class="css-chart" th:if="${not #lists.isEmpty(monthlyRows)}">
+              <div class="css-bar-row" th:each="p : ${monthlyRows}">
+                <div class="css-bar-label" th:text="${p.label}">Month</div>
+                <div class="css-bar-track"><div class="css-bar-fill" th:style="'width:' + ${p.percent} + '%'"></div></div>
+                <div class="css-bar-value" th:text="'$' + ${#numbers.formatDecimal(p.value,1,'COMMA',0,'POINT')}">$0</div>
+              </div>
+            </div>
+            <div class="empty-state" th:if="${#lists.isEmpty(monthlyRows)}"><h6>No sales yet</h6></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h6>Top-Selling Products</h6></div>
+          <div class="card-body">
+            <div class="css-chart" th:if="${not #lists.isEmpty(topProductRows)}">
+              <div class="css-bar-row" th:each="p : ${topProductRows}">
+                <div class="css-bar-label" th:text="${p.label}">Product</div>
+                <div class="css-bar-track"><div class="css-bar-fill" th:style="'width:' + ${p.percent} + '%'"></div></div>
+                <div class="css-bar-value" th:text="'$' + ${#numbers.formatDecimal(p.value,1,'COMMA',0,'POINT')}">$0</div>
+              </div>
+            </div>
+            <div class="empty-state" th:if="${#lists.isEmpty(topProductRows)}"><h6>No sales yet</h6></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-bottom-grid">
+        <div class="card">
+          <div class="card-header"><h6>Recent Transactions</h6><a th:href="@{/sales/invoices}" style="font-size:12.5px;">View all</a></div>
+          <div class="card-body">
+            <div th:if="${#lists.isEmpty(recentTransactions)}" class="empty-state"><h6>No transactions yet</h6></div>
+            <div class="list-row" th:each="tx : ${recentTransactions}">
+              <div style="display:flex;align-items:center;">
+                <div class="list-row-icon bg-icon-primary"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                <div><div style="font-weight:600;" th:text="${tx.reference}">REF</div>
+                <div style="font-size:12px;color:var(--text-secondary);" th:text="${tx.partyName}">Party</div></div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-weight:700;" th:text="'$' + ${#numbers.formatDecimal(tx.amount,1,'COMMA',2,'POINT')}">$0.00</div>
+                <span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(#strings.replace(tx.status,'_','-'))}" th:text="${#strings.replace(tx.status,'_',' ')}">Status</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h6>Low-Stock Alerts</h6><a th:href="@{/products}" style="font-size:12.5px;">View inventory</a></div>
+          <div class="card-body">
+            <div th:if="${#lists.isEmpty(lowStock)}" class="empty-state"><h6>Stock levels look healthy</h6></div>
+            <div class="list-row" th:each="p : ${lowStock}">
+              <div><div style="font-weight:600;" th:text="${p.name}">Product</div><div style="font-size:12px;color:var(--text-secondary);" th:text="'SKU: ' + ${p.sku}">SKU</div></div>
+              <span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(#strings.replace(p.stockStatus,' ','-'))}" th:text="${p.stockStatus}">Status</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

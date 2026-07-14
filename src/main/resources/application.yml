@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: protech-one-webapp
+
+  profiles:
+    active: dev
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/protech_one}
+    username: ${DB_USERNAME:protech}
+    password: ${DB_PASSWORD:protech}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: public
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 25MB
+
+server:
+  port: ${SERVER_PORT:8080}
+
+app:
+  security:
+    max-login-attempts: 5
+    account-lock-minutes: 15
+
+logging:
+  level:
+    com.protechone: INFO
+    org.hibernate.SQL: WARN

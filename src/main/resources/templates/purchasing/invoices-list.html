@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Purchase Invoices — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='purchase-invoices')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header">
+        <div><h2>Purchase Invoices</h2><p class="breadcrumb-text">Purchasing &raquo; Invoices</p></div>
+        <div class="page-actions"><a th:href="@{/purchasing/invoices/new}" class="btn btn-primary"><i class="fa-solid fa-plus"></i>New Purchase Invoice</a></div>
+      </div>
+      <th:block th:replace="~{fragments/layout :: alerts}"></th:block>
+
+      <div class="card">
+        <div class="card-body">
+          <div th:if="${#lists.isEmpty(invoices)}" class="empty-state"><h6>No purchase invoices yet</h6></div>
+          <table class="data-table" th:unless="${#lists.isEmpty(invoices)}">
+            <thead><tr><th>Invoice #</th><th>Supplier</th><th>Date</th><th>Total</th><th>Balance Due</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr th:each="i : ${invoices}">
+                <td th:text="${i.invoiceNumber}">INV</td>
+                <td th:text="${i.supplierName}">Supplier</td>
+                <td th:text="${i.invoiceDate}">Date</td>
+                <td th:text="'$' + ${#numbers.formatDecimal(i.grandTotal,1,'COMMA',2,'POINT')}">$0.00</td>
+                <td th:text="'$' + ${#numbers.formatDecimal(i.balanceDue,1,'COMMA',2,'POINT')}">$0.00</td>
+                <td><span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(#strings.replace(i.status,'_','-'))}" th:text="${#strings.replace(i.status,'_',' ')}">Status</span></td>
+                <td class="table-actions"><a class="btn btn-sm btn-outline" th:href="@{/purchasing/invoices/{id}(id=${i.id})}">View</a></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="pagination" th:if="${pageObj.totalPages > 1}">
+            <a th:each="p : ${#numbers.sequence(0, pageObj.totalPages - 1)}" th:href="@{/purchasing/invoices(page=${p})}"
+               th:classappend="${p == pageObj.number} ? 'active'" th:text="${p + 1}">1</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

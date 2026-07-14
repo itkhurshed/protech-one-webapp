@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>fragments</title></head>
+<body>
+
+<!-- ============================================================
+     headAssets: common <head> includes for every authenticated page.
+     ============================================================ -->
+<th:block th:fragment="headAssets">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/components.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}"/>
+    <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dark-mode.css}"/>
+    <link rel="stylesheet" th:href="@{/css/rtl.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</th:block>
+
+<!-- ============================================================
+     shellToggles: hidden checkboxes that drive the sidebar collapse /
+     mobile drawer purely in CSS (see responsive.css). Must sit
+     immediately before .app-shell for the ~ sibling selectors to work.
+     ============================================================ -->
+<th:block th:fragment="shellToggles">
+    <input type="checkbox" id="sidebarCollapseToggle" class="shell-toggle"/>
+    <input type="checkbox" id="sidebarMobileToggle" class="shell-toggle"/>
+</th:block>
+
+<!-- ============================================================
+     sidebar: main navigation. `active` selects which item is highlighted.
+     ============================================================ -->
+<aside class="sidebar" th:fragment="sidebar(active)">
+    <div class="sidebar-brand">
+        <div class="logo-mark">P1</div>
+        <span class="brand-text">ProTech One</span>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">Overview</div>
+        <a class="nav-item" th:classappend="${active == 'dashboard'} ? 'active'" th:href="@{/dashboard}">
+            <i class="fa-solid fa-gauge-high"></i><span class="nav-label">Dashboard</span>
+        </a>
+
+        <div class="nav-section-title">CRM &amp; Sales</div>
+        <a class="nav-item" th:classappend="${active == 'customers'} ? 'active'" th:href="@{/customers}">
+            <i class="fa-solid fa-users"></i><span class="nav-label">Customers</span>
+        </a>
+        <a class="nav-item" th:classappend="${active == 'sales-invoices'} ? 'active'" th:href="@{/sales/invoices}">
+            <i class="fa-solid fa-file-invoice-dollar"></i><span class="nav-label">Sales Invoices</span>
+        </a>
+
+        <div class="nav-section-title">Purchasing &amp; Inventory</div>
+        <a class="nav-item" th:classappend="${active == 'suppliers'} ? 'active'" th:href="@{/suppliers}">
+            <i class="fa-solid fa-truck-field"></i><span class="nav-label">Suppliers</span>
+        </a>
+        <a class="nav-item" th:classappend="${active == 'purchase-invoices'} ? 'active'" th:href="@{/purchasing/invoices}">
+            <i class="fa-solid fa-file-invoice"></i><span class="nav-label">Purchase Invoices</span>
+        </a>
+        <a class="nav-item" th:classappend="${active == 'products'} ? 'active'" th:href="@{/products}">
+            <i class="fa-solid fa-boxes-stacked"></i><span class="nav-label">Products</span>
+        </a>
+        <a class="nav-item" th:classappend="${active == 'warehouses'} ? 'active'" th:href="@{/warehouses}">
+            <i class="fa-solid fa-warehouse"></i><span class="nav-label">Warehouses</span>
+        </a>
+
+        <div class="nav-section-title">Finance</div>
+        <a class="nav-item" th:classappend="${active == 'expenses'} ? 'active'" th:href="@{/expenses}">
+            <i class="fa-solid fa-money-bill-wave"></i><span class="nav-label">Expenses</span>
+        </a>
+        <a class="nav-item" th:classappend="${active == 'reports'} ? 'active'" th:href="@{/reports}">
+            <i class="fa-solid fa-chart-line"></i><span class="nav-label">Reports</span>
+        </a>
+
+        <div class="nav-section-title">Administration</div>
+        <a class="nav-item" th:classappend="${active == 'users'} ? 'active'" th:href="@{/users}">
+            <i class="fa-solid fa-user-shield"></i><span class="nav-label">Users &amp; Roles</span>
+        </a>
+        <a class="nav-item" th:classappend="${active == 'company'} ? 'active'" th:href="@{/company}">
+            <i class="fa-solid fa-building"></i><span class="nav-label">Company Settings</span>
+        </a>
+    </nav>
+</aside>
+<label th:fragment="sidebarBackdrop" for="sidebarMobileToggle" class="sidebar-backdrop"></label>
+
+<!-- ============================================================
+     topbar: sidebar toggles, global search (plain GET form), theme/RTL
+     toggle links, notification bell and user menu as <details> dropdowns.
+     ============================================================ -->
+<header class="topbar" th:fragment="topbar">
+    <div style="display:flex;align-items:center;gap:12px;flex:1;">
+        <label for="sidebarCollapseToggle" class="icon-btn sidebar-collapse-btn" title="Collapse sidebar"><i class="fa-solid fa-bars"></i></label>
+        <label for="sidebarMobileToggle" class="icon-btn sidebar-mobile-btn" title="Menu"><i class="fa-solid fa-bars"></i></label>
+
+        <form class="topbar-search" th:action="@{/search}" method="get" style="flex:1;max-width:480px;">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" name="q" placeholder="Search customers, invoices, products, employees..."/>
+        </form>
+    </div>
+
+    <div class="topbar-actions" style="display:flex;align-items:center;gap:6px;">
+        <a class="icon-btn" th:href="@{/prefs/theme(value=${theme == 'dark' ? 'light' : 'dark'}, redirect=${#httpServletRequest.requestURI})}" title="Toggle dark mode">
+            <i class="fa-solid" th:classappend="${theme == 'dark'} ? 'fa-sun' : 'fa-moon'"></i>
+        </a>
+        <a class="icon-btn" th:href="@{/prefs/dir(value=${dir == 'rtl' ? 'ltr' : 'rtl'}, redirect=${#httpServletRequest.requestURI})}" title="Toggle RTL">
+            <i class="fa-solid fa-language"></i>
+        </a>
+
+        <details class="dropdown">
+            <summary class="icon-btn" title="Notifications">
+                <i class="fa-solid fa-bell"></i>
+                <span class="badge-dot" th:if="${unreadNotifications > 0}"></span>
+            </summary>
+            <div class="dropdown-panel notif-panel">
+                <div style="padding:12px 16px;font-weight:700;border-bottom:1px solid var(--border);">Notifications</div>
+                <p style="padding:14px 16px;color:var(--text-secondary);font-size:12.5px;margin:0;">
+                    You have <strong th:text="${unreadNotifications}">0</strong> unread notification(s).
+                </p>
+                <a th:href="@{/notifications}" style="text-align:center;">View all</a>
+            </div>
+        </details>
+
+        <details class="dropdown" th:if="${currentUser != null}">
+            <summary class="user-menu-trigger">
+                <div class="user-avatar" th:text="${#strings.substring(currentUser.firstName,0,1)} + ${#strings.substring(currentUser.lastName,0,1)}">U</div>
+            </summary>
+            <div class="dropdown-panel">
+                <div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+                    <div style="font-weight:700;font-size:13px;" th:text="${currentUser.firstName} + ' ' + ${currentUser.lastName}">Name</div>
+                    <div style="font-size:11.5px;color:var(--text-secondary);" th:text="${currentUser.role.name}">Role</div>
+                </div>
+                <a th:href="@{/company}"><i class="fa-solid fa-building me-2"></i>Company Settings</a>
+                <hr class="dropdown-divider"/>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" style="color:var(--danger);"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</button>
+                </form>
+            </div>
+        </details>
+    </div>
+</header>
+
+<!-- ============================================================
+     alerts: flash-message banners (success/error), no auto-dismiss JS.
+     ============================================================ -->
+<th:block th:fragment="alerts">
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+</th:block>
+
+</body>
+</html>

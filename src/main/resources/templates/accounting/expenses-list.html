@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Expenses — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='expenses')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header">
+        <div><h2>Expenses</h2><p class="breadcrumb-text">Accounting &raquo; Expenses</p></div>
+        <div class="page-actions"><a th:href="@{/expenses/new}" class="btn btn-primary"><i class="fa-solid fa-plus"></i>Add Expense</a></div>
+      </div>
+      <th:block th:replace="~{fragments/layout :: alerts}"></th:block>
+
+      <div class="card">
+        <div class="card-body">
+          <div th:if="${#lists.isEmpty(expenses)}" class="empty-state"><h6>No expenses recorded yet</h6></div>
+          <table class="data-table" th:unless="${#lists.isEmpty(expenses)}">
+            <thead><tr><th>Date</th><th>Category</th><th>Payee</th><th>Reference</th><th>Amount</th><th>Method</th><th></th></tr></thead>
+            <tbody>
+              <tr th:each="e : ${expenses}">
+                <td th:text="${e.expenseDate}">Date</td>
+                <td th:text="${e.categoryName} ?: '—'">Cat</td>
+                <td th:text="${e.payee} ?: '—'">Payee</td>
+                <td th:text="${e.referenceNo} ?: '—'">Ref</td>
+                <td th:text="'$' + ${#numbers.formatDecimal(e.amount,1,'COMMA',2,'POINT')}">$0.00</td>
+                <td th:text="${e.paymentMethod}">Method</td>
+                <td class="table-actions">
+                  <form th:action="@{/expenses/{id}/delete(id=${e.id})}" method="post">
+                    <button type="submit" class="btn btn-sm btn-outline btn-icon" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="pagination" th:if="${pageObj.totalPages > 1}">
+            <a th:each="p : ${#numbers.sequence(0, pageObj.totalPages - 1)}" th:href="@{/expenses(page=${p})}"
+               th:classappend="${p == pageObj.number} ? 'active'" th:text="${p + 1}">1</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

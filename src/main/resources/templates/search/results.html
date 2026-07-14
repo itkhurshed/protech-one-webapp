@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title th:text="'Search: ' + ${query} + ' — ProTech One'">Search</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header">
+        <div><h2>Search Results</h2><p class="breadcrumb-text" th:text="'Results for &quot;' + ${query} + '&quot;'">Results</p></div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div th:if="${#lists.isEmpty(results)}" class="empty-state">
+            <i class="fa-solid fa-magnifying-glass" style="font-size:36px;color:var(--text-muted);margin-bottom:10px;display:block;"></i>
+            <h6>No matches found</h6>
+            <p>Try a different search term.</p>
+          </div>
+          <div th:unless="${#lists.isEmpty(results)}">
+            <div class="list-row" th:each="r : ${results}">
+              <div>
+                <div style="font-size:11px;text-transform:uppercase;font-weight:700;color:var(--primary);" th:text="${r.category}">Category</div>
+                <a th:href="${r.url}" style="font-weight:600;color:var(--text-primary);" th:text="${r.title}">Title</a>
+                <div style="font-size:12px;color:var(--text-secondary);" th:text="${r.subtitle}">Subtitle</div>
+              </div>
+              <a th:href="${r.url}" class="btn btn-sm btn-outline">Open</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

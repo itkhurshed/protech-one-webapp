@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Adjust Stock — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='warehouses')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header"><div><h2>Adjust Stock</h2><p class="breadcrumb-text">Inventory &raquo; Warehouses &raquo; Adjust</p></div></div>
+      <div class="card" style="max-width:560px;">
+        <div class="card-body">
+          <form th:action="@{/warehouses/adjust}" th:object="${form}" method="post">
+            <div class="form-group">
+              <label class="form-label">Product</label>
+              <select class="form-control" th:field="*{productId}" required>
+                <option value="">Select product...</option>
+                <option th:each="p : ${products}" th:value="${p.id}" th:text="${p.name} + ' (' + ${p.sku} + ')'">Product</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Warehouse</label>
+              <select class="form-control" th:field="*{warehouseId}" required>
+                <option th:each="w : ${warehouses}" th:value="${w.id}" th:text="${w.name}">Warehouse</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Movement Type</label>
+              <select class="form-control" th:field="*{movementType}">
+                <option value="IN">Stock In</option><option value="OUT">Stock Out</option><option value="ADJUSTMENT">Adjustment (increase)</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Quantity *</label><input type="number" step="0.01" class="form-control" th:field="*{quantity}" required/></div>
+            <div class="form-group"><label class="form-label">Notes</label><input class="form-control" th:field="*{notes}"/></div>
+            <div class="page-actions">
+              <button type="submit" class="btn btn-primary">Apply</button>
+              <a th:href="@{/warehouses}" class="btn btn-outline">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

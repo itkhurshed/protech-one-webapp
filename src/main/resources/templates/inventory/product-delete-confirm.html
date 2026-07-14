@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Delete Product — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='products')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header"><div><h2>Delete Product</h2></div></div>
+      <div class="card" style="max-width:520px;">
+        <div class="card-body">
+          <p>Are you sure you want to delete <strong th:text="${product.name}">Product</strong>? This cannot be undone.</p>
+          <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post">
+            <div class="page-actions">
+              <button type="submit" class="btn btn-danger">Yes, Delete</button>
+              <a th:href="@{/products}" class="btn btn-outline">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

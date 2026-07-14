@@ -1,0 +1,8 @@
+spring:
+  jpa:
+    show-sql: false
+  thymeleaf:
+    cache: true
+logging:
+  level:
+    com.protechone: WARN

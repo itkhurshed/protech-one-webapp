@@ -1,0 +1,39 @@
+package com.protechone.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+
+@Entity
+@Table(name = "purchase_invoice_items")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class PurchaseInvoiceItem {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "purchase_invoice_id", nullable = false)
+    private PurchaseInvoice purchaseInvoice;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    @Column(nullable = false)
+    private BigDecimal quantity;
+
+    @Column(name = "unit_cost", nullable = false)
+    private BigDecimal unitCost;
+
+    @Column(name = "discount_pct")
+    private BigDecimal discountPct;
+
+    @Column(name = "tax_rate")
+    private BigDecimal taxRate;
+
+    @Column(name = "line_total", nullable = false)
+    private BigDecimal lineTotal;
+}

@@ -1,0 +1,60 @@
+/* ============================================================================
+   Responsive layout + the checkbox-hack sidebar toggle (desktop collapse and
+   mobile off-canvas drawer) — pure CSS, no JavaScript. Two hidden checkboxes
+   are placed immediately before .app-shell in the layout fragment; labels
+   anywhere in the page can toggle them via their `for` attribute, and CSS
+   sibling selectors react to the :checked state.
+   ============================================================================ */
+
+input.shell-toggle { position: absolute; opacity: 0; pointer-events: none; }
+
+/* Desktop collapse */
+#sidebarCollapseToggle:checked ~ .app-shell .sidebar { width: var(--sidebar-collapsed-width); }
+#sidebarCollapseToggle:checked ~ .app-shell .sidebar .nav-label,
+#sidebarCollapseToggle:checked ~ .app-shell .sidebar .brand-text,
+#sidebarCollapseToggle:checked ~ .app-shell .sidebar .nav-section-title { display: none; }
+#sidebarCollapseToggle:checked ~ .app-shell .main-wrap { margin-left: var(--sidebar-collapsed-width); }
+
+.sidebar-mobile-btn { display: none; }
+
+@media (max-width: 1200px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-grid { grid-template-columns: 1fr; }
+    .chart-grid-thirds { grid-template-columns: repeat(2, 1fr); }
+    .dashboard-bottom-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+    .chart-grid-thirds { grid-template-columns: 1fr; }
+    .form-row.cols-2, .form-row.cols-3 { grid-template-columns: 1fr; }
+
+    .sidebar-collapse-btn { display: none; }
+    .sidebar-mobile-btn { display: flex; }
+
+    .sidebar {
+        transform: translateX(-100%);
+        width: min(80vw, 280px) !important;
+        box-shadow: var(--shadow-lg);
+    }
+    #sidebarMobileToggle:checked ~ .app-shell .sidebar { transform: translateX(0); }
+    .main-wrap { margin-left: 0 !important; }
+    #sidebarCollapseToggle:checked ~ .app-shell .main-wrap { margin-left: 0 !important; }
+
+    .topbar-search { display: none; }
+    .content { padding: 16px; }
+
+    .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.4); z-index: 1025; }
+    #sidebarMobileToggle:checked ~ .app-shell .sidebar-backdrop { display: block; }
+}
+
+@media (max-width: 480px) {
+    .home-logo { font-size: 32px; }
+    .home-quicklinks a { font-size: 12px; padding: 8px 14px; }
+}
+
+@media print {
+    .sidebar, .topbar, .page-actions, .table-actions { display: none !important; }
+    .main-wrap { margin-left: 0 !important; }
+    .content { padding: 0 !important; }
+}

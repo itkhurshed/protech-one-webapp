@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title th:text="${isEdit} ? 'Edit User — ProTech One' : 'Add User — ProTech One'">User</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='users')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header"><div><h2 th:text="${isEdit} ? 'Edit User' : 'Add User'">User</h2></div></div>
+      <div class="card">
+        <div class="card-body">
+          <form th:action="${isEdit} ? @{/users/{id}/edit(id=${userId})} : @{/users}" th:object="${form}" method="post">
+            <div class="form-row cols-3">
+              <div class="form-group"><label class="form-label">Employee #</label><input class="form-control" th:field="*{employeeNumber}"/></div>
+              <div class="form-group"><label class="form-label">First Name *</label><input class="form-control" th:field="*{firstName}" required/></div>
+              <div class="form-group"><label class="form-label">Last Name *</label><input class="form-control" th:field="*{lastName}" required/></div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-control" th:field="*{email}" required/></div>
+              <div class="form-group"><label class="form-label">Phone</label><input class="form-control" th:field="*{phone}"/></div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label">Role *</label>
+                <select class="form-control" th:field="*{roleId}" required>
+                  <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.name}">Role</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" th:field="*{password}"/>
+                <p class="form-hint">Leave blank to auto-generate (new users) or keep unchanged (existing users).</p>
+              </div>
+            </div>
+            <div class="form-group form-check" th:if="${isEdit}"><input type="checkbox" th:field="*{isActive}"/> <label class="form-label" style="margin:0;">Active</label></div>
+
+            <div class="page-actions">
+              <button type="submit" class="btn btn-primary">Save User</button>
+              <a th:href="@{/users}" class="btn btn-outline">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Reports — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='reports')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header">
+        <div><h2>Reports</h2><p class="breadcrumb-text">Sales, Purchases, Expenses &amp; Inventory</p></div>
+        <div class="page-actions">
+          <a th:href="@{/reports/export.csv(start=${start}, end=${end})}" class="btn btn-outline"><i class="fa-solid fa-file-csv"></i>Export CSV</a>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-body">
+          <form th:action="@{/reports}" method="get" class="form-row cols-3" style="align-items:end;">
+            <div class="form-group" style="margin-bottom:0;"><label class="form-label">Start Date</label><input type="date" name="start" class="form-control" th:value="${start}"/></div>
+            <div class="form-group" style="margin-bottom:0;"><label class="form-label">End Date</label><input type="date" name="end" class="form-control" th:value="${end}"/></div>
+            <div><button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-filter"></i>Apply Filter</button></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card"><div><div class="kpi-label">Total Sales</div><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(sales.totalSales,1,'COMMA',2,'POINT')}">$0.00</div></div><div class="kpi-icon bg-icon-primary"><i class="fa-solid fa-chart-line"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Total Purchases</div><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(purchases.totalPurchases,1,'COMMA',2,'POINT')}">$0.00</div></div><div class="kpi-icon bg-icon-info"><i class="fa-solid fa-truck-field"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Total Expenses</div><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(expenses.totalExpenses,1,'COMMA',2,'POINT')}">$0.00</div></div><div class="kpi-icon bg-icon-danger"><i class="fa-solid fa-money-bill-wave"></i></div></div>
+        <div class="kpi-card"><div><div class="kpi-label">Inventory Value</div><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(inventory.totalInventoryValue,1,'COMMA',2,'POINT')}">$0.00</div></div><div class="kpi-icon bg-icon-success"><i class="fa-solid fa-boxes-stacked"></i></div></div>
+      </div>
+
+      <div class="chart-grid-thirds">
+        <div class="card"><div class="card-header"><h6>Receivables Outstanding</h6></div><div class="card-body"><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(sales.outstandingReceivables,1,'COMMA',2,'POINT')}">$0.00</div></div></div>
+        <div class="card"><div class="card-header"><h6>Payables Outstanding</h6></div><div class="card-body"><div class="kpi-value" th:text="'$' + ${#numbers.formatDecimal(purchases.outstandingPayables,1,'COMMA',2,'POINT')}">$0.00</div></div></div>
+        <div class="card"><div class="card-header"><h6>Low-Stock Products</h6></div><div class="card-body"><div class="kpi-value" th:text="${inventory.lowStockCount}">0</div></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h6>Report Summary</h6><span class="breadcrumb-text" th:text="${sales.periodStart} + ' to ' + ${sales.periodEnd}">Period</span></div>
+        <div class="card-body">
+          <p class="form-hint">To print this report, use your browser's print command (Ctrl/Cmd+P) — the sidebar and buttons are hidden automatically in the print layout.</p>
+          <table class="data-table">
+            <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Total Sales</td><td th:text="'$' + ${#numbers.formatDecimal(sales.totalSales,1,'COMMA',2,'POINT')}">-</td></tr>
+              <tr><td>Outstanding Receivables</td><td th:text="'$' + ${#numbers.formatDecimal(sales.outstandingReceivables,1,'COMMA',2,'POINT')}">-</td></tr>
+              <tr><td>Total Purchases</td><td th:text="'$' + ${#numbers.formatDecimal(purchases.totalPurchases,1,'COMMA',2,'POINT')}">-</td></tr>
+              <tr><td>Outstanding Payables</td><td th:text="'$' + ${#numbers.formatDecimal(purchases.outstandingPayables,1,'COMMA',2,'POINT')}">-</td></tr>
+              <tr><td>Total Expenses</td><td th:text="'$' + ${#numbers.formatDecimal(expenses.totalExpenses,1,'COMMA',2,'POINT')}">-</td></tr>
+              <tr><td>Total Products</td><td th:text="${inventory.totalProducts}">-</td></tr>
+              <tr><td>Inventory Value</td><td th:text="'$' + ${#numbers.formatDecimal(inventory.totalInventoryValue,1,'COMMA',2,'POINT')}">-</td></tr>
+              <tr><td>Low-Stock Products</td><td th:text="${inventory.lowStockCount}">-</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

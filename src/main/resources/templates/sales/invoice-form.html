@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>New Sales Invoice — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='sales-invoices')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header"><div><h2>New Sales Invoice</h2><p class="breadcrumb-text">Sales &raquo; Invoices &raquo; New</p></div></div>
+      <th:block th:replace="~{fragments/layout :: alerts}"></th:block>
+
+      <div class="card">
+        <div class="card-body">
+          <form th:action="@{/sales/invoices}" th:object="${form}" method="post">
+            <div class="form-row cols-3">
+              <div class="form-group">
+                <label class="form-label">Customer *</label>
+                <select class="form-control" th:field="*{customerId}" required>
+                  <option value="">Select customer...</option>
+                  <option th:each="c : ${customers}" th:value="${c.id}" th:text="${c.name}">Customer</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Warehouse</label>
+                <select class="form-control" th:field="*{warehouseId}">
+                  <option value="">Select warehouse...</option>
+                  <option th:each="w : ${warehouses}" th:value="${w.id}" th:text="${w.name}">Warehouse</option>
+                </select>
+              </div>
+              <div class="form-group"><label class="form-label">Invoice Date</label><input type="date" class="form-control" th:field="*{invoiceDate}"/></div>
+            </div>
+
+            <hr style="border-color:var(--border);margin:16px 0;"/>
+            <h6>Line Items</h6>
+            <p class="form-hint">Fill in as many rows as you need — leave the product blank on rows you don't use. Totals are calculated after you save.</p>
+            <table class="data-table item-line-table">
+              <thead><tr><th style="width:32%;">Product</th><th>Qty</th><th>Unit Price</th><th>Disc %</th><th>Tax %</th></tr></thead>
+              <tbody>
+                <tr th:each="item, stat : *{items}">
+                  <td>
+                    <select class="form-control" th:field="*{items[__${stat.index}__].productId}">
+                      <option value="">—</option>
+                      <option th:each="p : ${products}" th:value="${p.id}"
+                              th:text="${p.name} + ' (' + ${p.sku} + ') - $' + ${p.sellingPrice}"
+                              th:attr="data-price=${p.sellingPrice}">Product</option>
+                    </select>
+                  </td>
+                  <td><input type="number" step="0.01" class="form-control" th:field="*{items[__${stat.index}__].quantity}"/></td>
+                  <td><input type="number" step="0.01" class="form-control" th:field="*{items[__${stat.index}__].unitPrice}"/></td>
+                  <td><input type="number" step="0.01" class="form-control" th:field="*{items[__${stat.index}__].discountPct}"/></td>
+                  <td><input type="number" step="0.01" class="form-control" th:field="*{items[__${stat.index}__].taxRate}"/></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="form-group" style="margin-top:16px;"><label class="form-label">Notes</label><textarea class="form-control" rows="2" th:field="*{notes}"></textarea></div>
+
+            <div class="page-actions">
+              <button type="submit" class="btn btn-primary">Save as Draft</button>
+              <a th:href="@{/sales/invoices}" class="btn btn-outline">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

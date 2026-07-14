@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><title>Error — ProTech One</title>
+<link rel="stylesheet" th:href="@{/css/main.css}"/><link rel="stylesheet" th:href="@{/css/components.css}"/>
+</head>
+<body>
+<div class="auth-wrap"><div class="auth-card" style="text-align:center;">
+  <div class="home-logo" th:text="${status} ?: 'Error'">Error</div>
+  <p class="auth-subtitle" th:text="${error} ?: 'Something went wrong.'">Error</p>
+  <a href="/" class="btn btn-primary">Back to Home</a>
+</div></div>
+</body>
+</html>

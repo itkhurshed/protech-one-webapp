@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Warehouses — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='warehouses')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header">
+        <div><h2>Warehouses</h2><p class="breadcrumb-text">Inventory &raquo; Warehouses</p></div>
+        <div class="page-actions">
+          <a th:href="@{/warehouses/transfer}" class="btn btn-outline"><i class="fa-solid fa-right-left"></i>Transfer Stock</a>
+          <a th:href="@{/warehouses/adjust}" class="btn btn-outline"><i class="fa-solid fa-sliders"></i>Adjust Stock</a>
+        </div>
+      </div>
+      <th:block th:replace="~{fragments/layout :: alerts}"></th:block>
+
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header"><h6>Add Warehouse</h6></div>
+        <div class="card-body">
+          <form th:action="@{/warehouses}" method="post" class="form-row cols-3" style="align-items:end;">
+            <div class="form-group" style="margin-bottom:0;"><label class="form-label">Name *</label><input class="form-control" name="name" required/></div>
+            <div class="form-group" style="margin-bottom:0;"><label class="form-label">Code</label><input class="form-control" name="code"/></div>
+            <div class="form-group" style="margin-bottom:0;"><label class="form-label">Location</label><input class="form-control" name="location"/></div>
+            <div style="grid-column:1/-1;"><button type="submit" class="btn btn-primary btn-sm">Add Warehouse</button></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div th:if="${#lists.isEmpty(warehouses)}" class="empty-state"><h6>No warehouses yet</h6></div>
+          <table class="data-table" th:unless="${#lists.isEmpty(warehouses)}">
+            <thead><tr><th>Code</th><th>Name</th><th>Location</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr th:each="w : ${warehouses}">
+                <td th:text="${w.code} ?: '—'">Code</td>
+                <td th:text="${w.name}">Name</td>
+                <td th:text="${w.location} ?: '—'">Location</td>
+                <td><span class="status-badge" th:classappend="${w.isActive} ? 'status-active' : 'status-inactive'" th:text="${w.isActive} ? 'Active' : 'Inactive'">Status</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

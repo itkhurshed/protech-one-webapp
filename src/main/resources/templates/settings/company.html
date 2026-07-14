@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Company Settings — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='company')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header"><div><h2>Company Settings</h2><p class="breadcrumb-text">Administration &raquo; Company Settings</p></div></div>
+      <th:block th:replace="~{fragments/layout :: alerts}"></th:block>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-header"><h6>Company Profile</h6></div>
+        <div class="card-body">
+          <form th:action="@{/company}" th:object="${form}" method="post">
+            <div class="form-row cols-2">
+              <div class="form-group"><label class="form-label">Company Name</label><input class="form-control" th:field="*{name}"/></div>
+              <div class="form-group"><label class="form-label">Legal Name</label><input class="form-control" th:field="*{legalName}"/></div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group"><label class="form-label">Tax Number</label><input class="form-control" th:field="*{taxNumber}"/></div>
+              <div class="form-group"><label class="form-label">Commercial Registration</label><input class="form-control" th:field="*{commercialRegistration}"/></div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" th:field="*{email}"/></div>
+              <div class="form-group"><label class="form-label">Phone</label><input class="form-control" th:field="*{phone}"/></div>
+            </div>
+            <div class="form-group"><label class="form-label">Address</label><input class="form-control" th:field="*{address}"/></div>
+            <div class="form-row cols-3">
+              <div class="form-group"><label class="form-label">City</label><input class="form-control" th:field="*{city}"/></div>
+              <div class="form-group"><label class="form-label">Country</label><input class="form-control" th:field="*{country}"/></div>
+              <div class="form-group"><label class="form-label">Currency Code</label><input class="form-control" th:field="*{currencyCode}" placeholder="USD"/></div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group"><label class="form-label">Language Code</label><input class="form-control" th:field="*{languageCode}" placeholder="en"/></div>
+              <div class="form-group"><label class="form-label">Fiscal Year Start Month</label><input type="number" min="1" max="12" class="form-control" th:field="*{fiscalYearStartMonth}"/></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Company Profile</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-header"><h6>Add Branch</h6></div>
+        <div class="card-body">
+          <form th:action="@{/company/branches}" method="post" class="form-row cols-3" style="align-items:end;">
+            <div class="form-group" style="margin-bottom:0;"><label class="form-label">Name *</label><input class="form-control" name="name" required/></div>
+            <div class="form-group" style="margin-bottom:0;"><label class="form-label">Code</label><input class="form-control" name="code"/></div>
+            <div class="form-group" style="margin-bottom:0;"><label class="form-label">Address</label><input class="form-control" name="address"/></div>
+            <div style="grid-column:1/-1;"><button type="submit" class="btn btn-primary btn-sm">Add Branch</button></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h6>Branches</h6></div>
+        <div class="card-body">
+          <div th:if="${#lists.isEmpty(branches)}" class="empty-state"><h6>No branches yet</h6></div>
+          <table class="data-table" th:unless="${#lists.isEmpty(branches)}">
+            <thead><tr><th>Code</th><th>Name</th><th>Address</th><th>Main</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr th:each="b : ${branches}">
+                <td th:text="${b.code} ?: '—'">Code</td>
+                <td th:text="${b.name}">Name</td>
+                <td th:text="${b.address} ?: '—'">Address</td>
+                <td><i th:if="${b.isMain}" class="fa-solid fa-star" style="color:var(--warning);"></i></td>
+                <td><span class="status-badge" th:classappend="${b.isActive} ? 'status-active' : 'status-inactive'" th:text="${b.isActive} ? 'Active' : 'Inactive'">Status</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

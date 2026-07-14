@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Products — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='products')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header">
+        <div><h2>Products</h2><p class="breadcrumb-text">Inventory &raquo; Products</p></div>
+        <div class="page-actions"><a th:href="@{/products/new}" class="btn btn-primary"><i class="fa-solid fa-plus"></i>Add Product</a></div>
+      </div>
+      <th:block th:replace="~{fragments/layout :: alerts}"></th:block>
+
+      <div class="card">
+        <div class="card-header">
+          <form th:action="@{/products}" method="get" style="display:flex;gap:8px;">
+            <input type="text" name="search" class="form-control" placeholder="Filter by name, SKU, barcode..." th:value="${search}" style="width:280px;"/>
+            <button type="submit" class="btn btn-outline btn-sm"><i class="fa-solid fa-filter"></i>Filter</button>
+          </form>
+        </div>
+        <div class="card-body">
+          <div th:if="${#lists.isEmpty(products)}" class="empty-state"><h6>No products yet</h6></div>
+          <table class="data-table" th:unless="${#lists.isEmpty(products)}">
+            <thead><tr><th>SKU</th><th>Name</th><th>Category</th><th>Cost</th><th>Price</th><th>Stock</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr th:each="p : ${products}">
+                <td th:text="${p.sku}">SKU</td>
+                <td th:text="${p.name}">Name</td>
+                <td th:text="${p.categoryName} ?: '—'">Cat</td>
+                <td th:text="'$' + ${#numbers.formatDecimal(p.costPrice,1,'COMMA',2,'POINT')}">$0.00</td>
+                <td th:text="'$' + ${#numbers.formatDecimal(p.sellingPrice,1,'COMMA',2,'POINT')}">$0.00</td>
+                <td th:text="${p.totalStock}">0</td>
+                <td><span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(#strings.replace(p.stockStatus,' ','-'))}" th:text="${p.stockStatus}">Status</span></td>
+                <td class="table-actions">
+                  <a class="btn btn-sm btn-outline btn-icon" th:href="@{/products/{id}/edit(id=${p.id})}"><i class="fa-solid fa-pen"></i></a>
+                  <a class="btn btn-sm btn-outline btn-icon" th:href="@{/products/{id}/delete(id=${p.id})}"><i class="fa-solid fa-trash"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="pagination" th:if="${pageObj.totalPages > 1}">
+            <a th:each="p : ${#numbers.sequence(0, pageObj.totalPages - 1)}" th:href="@{/products(page=${p}, search=${search})}"
+               th:classappend="${p == pageObj.number} ? 'active'" th:text="${p + 1}">1</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

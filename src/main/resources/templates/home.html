@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>ProTech One — All-in-One Professional Business System</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<div class="home-hero">
+    <a class="icon-btn" style="position:absolute;top:20px;right:24px;"
+       th:href="@{/prefs/theme(value=${theme == 'dark' ? 'light' : 'dark'}, redirect='/')}" title="Toggle dark mode">
+        <i class="fa-solid" th:classappend="${theme == 'dark'} ? 'fa-sun' : 'fa-moon'"></i>
+    </a>
+
+    <div class="home-logo">ProTech One</div>
+    <p class="home-tagline">Search customers, invoices, products, employees, tickets, reports and documents...</p>
+
+    <form class="home-search" th:action="@{/search}" method="get">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" name="q" placeholder="Search anything across your business..."/>
+    </form>
+
+    <div class="home-quicklinks">
+        <a th:href="${currentUser != null} ? @{/customers} : @{/login}"><i class="fa-solid fa-users me-2"></i>Customers</a>
+        <a th:href="${currentUser != null} ? @{/sales/invoices} : @{/login}"><i class="fa-solid fa-file-invoice-dollar me-2"></i>Sales</a>
+        <a th:href="${currentUser != null} ? @{/products} : @{/login}"><i class="fa-solid fa-boxes-stacked me-2"></i>Inventory</a>
+        <a th:href="${currentUser != null} ? @{/expenses} : @{/login}"><i class="fa-solid fa-money-bill-wave me-2"></i>Accounting</a>
+        <a th:href="${currentUser != null} ? @{/users} : @{/login}"><i class="fa-solid fa-user-shield me-2"></i>Users</a>
+        <a th:href="${currentUser != null} ? @{/purchasing/invoices} : @{/login}"><i class="fa-solid fa-truck-field me-2"></i>Purchasing</a>
+        <a th:href="${currentUser != null} ? @{/reports} : @{/login}"><i class="fa-solid fa-chart-line me-2"></i>Reports</a>
+        <a th:href="${currentUser != null} ? @{/dashboard} : @{/login}"><i class="fa-solid fa-gauge-high me-2"></i>Dashboard</a>
+    </div>
+
+    <div style="margin-top:24px;">
+        <a th:if="${currentUser == null}" th:href="@{/login}" class="btn btn-primary" style="padding:11px 24px;border-radius:999px;">
+            Sign In <i class="fa-solid fa-arrow-right ms-1"></i>
+        </a>
+        <a th:if="${currentUser != null}" th:href="@{/dashboard}" class="btn btn-primary" style="padding:11px 24px;border-radius:999px;">
+            Go to Dashboard <i class="fa-solid fa-arrow-right ms-1"></i>
+        </a>
+    </div>
+</div>
+</body>
+</html>

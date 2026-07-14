@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title th:text="${invoice.invoiceNumber} + ' — ProTech One'">Invoice</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='sales-invoices')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header">
+        <div><h2 th:text="${invoice.invoiceNumber}">INV</h2><p class="breadcrumb-text" th:text="${invoice.customerName}">Customer</p></div>
+        <span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(#strings.replace(invoice.status,'_','-'))}" th:text="${#strings.replace(invoice.status,'_',' ')}">Status</span>
+      </div>
+      <th:block th:replace="~{fragments/layout :: alerts}"></th:block>
+
+      <div class="dashboard-bottom-grid">
+        <div class="card">
+          <div class="card-header"><h6>Line Items</h6></div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+              <tbody>
+                <tr th:each="it : ${invoice.items}">
+                  <td th:text="${it.productName}">Product</td>
+                  <td th:text="${it.quantity}">1</td>
+                  <td th:text="'$' + ${#numbers.formatDecimal(it.unitPrice,1,'COMMA',2,'POINT')}">$0.00</td>
+                  <td th:text="'$' + ${#numbers.formatDecimal(it.lineTotal,1,'COMMA',2,'POINT')}">$0.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h6>Summary</h6></div>
+          <div class="card-body">
+            <div class="list-row"><span>Subtotal</span><strong th:text="'$' + ${#numbers.formatDecimal(invoice.subtotal,1,'COMMA',2,'POINT')}">$0.00</strong></div>
+            <div class="list-row"><span>Discount</span><strong th:text="'$' + ${#numbers.formatDecimal(invoice.discountTotal,1,'COMMA',2,'POINT')}">$0.00</strong></div>
+            <div class="list-row"><span>Tax</span><strong th:text="'$' + ${#numbers.formatDecimal(invoice.taxTotal,1,'COMMA',2,'POINT')}">$0.00</strong></div>
+            <div class="list-row"><span style="font-weight:700;">Grand Total</span><strong th:text="'$' + ${#numbers.formatDecimal(invoice.grandTotal,1,'COMMA',2,'POINT')}">$0.00</strong></div>
+            <div class="list-row"><span style="color:var(--success);">Paid</span><strong style="color:var(--success);" th:text="'$' + ${#numbers.formatDecimal(invoice.amountPaid,1,'COMMA',2,'POINT')}">$0.00</strong></div>
+            <div class="list-row"><span style="color:var(--danger);">Balance Due</span><strong style="color:var(--danger);" th:text="'$' + ${#numbers.formatDecimal(invoice.balanceDue,1,'COMMA',2,'POINT')}">$0.00</strong></div>
+
+            <div class="page-actions" style="margin-top:16px;flex-direction:column;">
+              <form th:if="${invoice.status == 'DRAFT'}" th:action="@{/sales/invoices/{id}/confirm(id=${invoice.id})}" method="post" style="width:100%;">
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Confirm &amp; Deduct Stock</button>
+              </form>
+
+              <details th:if="${invoice.status != 'CANCELLED' and invoice.status != 'PAID'}" style="width:100%;">
+                <summary class="btn btn-success" style="width:100%;justify-content:center;">Record Payment</summary>
+                <form th:action="@{/sales/invoices/{id}/pay(id=${invoice.id})}" method="post" style="margin-top:10px;">
+                  <div class="form-group"><label class="form-label">Amount</label><input type="number" step="0.01" name="amount" class="form-control" required/></div>
+                  <div class="form-group">
+                    <label class="form-label">Method</label>
+                    <select class="form-control" name="method"><option>CASH</option><option>BANK</option><option>CARD</option><option>CHEQUE</option></select>
+                  </div>
+                  <button type="submit" class="btn btn-success" style="width:100%;justify-content:center;">Save Payment</button>
+                </form>
+              </details>
+
+              <form th:if="${invoice.status != 'CANCELLED'}" th:action="@{/sales/invoices/{id}/cancel(id=${invoice.id})}" method="post" style="width:100%;">
+                <button type="submit" class="btn btn-outline" style="width:100%;justify-content:center;color:var(--danger);">Cancel Invoice</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

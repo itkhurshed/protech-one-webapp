@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Suppliers — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='suppliers')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header">
+        <div><h2>Suppliers</h2><p class="breadcrumb-text">Purchasing &raquo; Suppliers</p></div>
+        <div class="page-actions"><a th:href="@{/suppliers/new}" class="btn btn-primary"><i class="fa-solid fa-plus"></i>Add Supplier</a></div>
+      </div>
+      <th:block th:replace="~{fragments/layout :: alerts}"></th:block>
+
+      <div class="card">
+        <div class="card-header">
+          <form th:action="@{/suppliers}" method="get" style="display:flex;gap:8px;">
+            <input type="text" name="search" class="form-control" placeholder="Filter by name, email, code..." th:value="${search}" style="width:280px;"/>
+            <button type="submit" class="btn btn-outline btn-sm"><i class="fa-solid fa-filter"></i>Filter</button>
+          </form>
+        </div>
+        <div class="card-body">
+          <div th:if="${#lists.isEmpty(suppliers)}" class="empty-state"><h6>No suppliers yet</h6></div>
+          <table class="data-table" th:unless="${#lists.isEmpty(suppliers)}">
+            <thead><tr><th>Code</th><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Payment Terms</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr th:each="s : ${suppliers}">
+                <td th:text="${s.code} ?: '—'">CODE</td>
+                <td th:text="${s.name}">Name</td>
+                <td th:text="${s.email} ?: '—'">Email</td>
+                <td th:text="${s.phone} ?: '—'">Phone</td>
+                <td th:text="${s.city} ?: '—'">City</td>
+                <td th:text="${s.paymentTerms} ?: '—'">Terms</td>
+                <td><span class="status-badge" th:classappend="${s.isActive} ? 'status-active' : 'status-inactive'" th:text="${s.isActive} ? 'Active' : 'Inactive'">Status</span></td>
+                <td class="table-actions">
+                  <a class="btn btn-sm btn-outline btn-icon" th:href="@{/suppliers/{id}/edit(id=${s.id})}"><i class="fa-solid fa-pen"></i></a>
+                  <a class="btn btn-sm btn-outline btn-icon" th:href="@{/suppliers/{id}/delete(id=${s.id})}"><i class="fa-solid fa-trash"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="pagination" th:if="${pageObj.totalPages > 1}">
+            <a th:each="p : ${#numbers.sequence(0, pageObj.totalPages - 1)}" th:href="@{/suppliers(page=${p}, search=${search})}"
+               th:classappend="${p == pageObj.number} ? 'active'" th:text="${p + 1}">1</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title th:text="${isEdit} ? 'Edit Customer — ProTech One' : 'Add Customer — ProTech One'">Customer</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='customers')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header">
+        <div><h2 th:text="${isEdit} ? 'Edit Customer' : 'Add Customer'">Customer</h2><p class="breadcrumb-text">CRM &raquo; Customers &raquo; <span th:text="${isEdit} ? 'Edit' : 'New'">New</span></p></div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <form th:action="${isEdit} ? @{/customers/{id}/edit(id=${customerId})} : @{/customers}" th:object="${form}" method="post">
+            <div class="form-row cols-2">
+              <div class="form-group"><label class="form-label">Customer Code</label><input class="form-control" th:field="*{code}"/></div>
+              <div class="form-group"><label class="form-label">Name *</label><input class="form-control" th:field="*{name}" required/></div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-control" th:field="*{category}">
+                  <option value="">Select...</option>
+                  <option>Retail</option><option>Wholesale</option><option>Corporate</option><option>VIP</option>
+                </select>
+              </div>
+              <div class="form-group"><label class="form-label">Tax Number</label><input class="form-control" th:field="*{taxNumber}"/></div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" th:field="*{email}"/></div>
+              <div class="form-group"><label class="form-label">Phone</label><input class="form-control" th:field="*{phone}"/></div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-control" th:field="*{whatsapp}"/></div>
+              <div class="form-group"><label class="form-label">City</label><input class="form-control" th:field="*{city}"/></div>
+            </div>
+            <div class="form-group"><label class="form-label">Address</label><input class="form-control" th:field="*{address}"/></div>
+            <div class="form-row cols-2">
+              <div class="form-group"><label class="form-label">Credit Limit</label><input type="number" step="0.01" class="form-control" th:field="*{creditLimit}"/></div>
+              <div class="form-group"><label class="form-label">Opening Balance</label><input type="number" step="0.01" class="form-control" th:field="*{openingBalance}"/></div>
+            </div>
+            <div class="form-group"><label class="form-label">Notes</label><textarea class="form-control" rows="2" th:field="*{notes}"></textarea></div>
+            <div class="form-group form-check" th:if="${isEdit}">
+              <input type="checkbox" th:field="*{isActive}"/> <label class="form-label" style="margin:0;">Active</label>
+            </div>
+
+            <div class="page-actions" style="margin-top:10px;">
+              <button type="submit" class="btn btn-primary">Save Customer</button>
+              <a th:href="@{/customers}" class="btn btn-outline">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

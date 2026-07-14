@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Users & Roles — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='users')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header">
+        <div><h2>Users &amp; Roles</h2><p class="breadcrumb-text">Administration &raquo; Users &amp; Roles</p></div>
+        <div class="page-actions"><a th:href="@{/users/new}" class="btn btn-primary"><i class="fa-solid fa-plus"></i>Add User</a></div>
+      </div>
+      <th:block th:replace="~{fragments/layout :: alerts}"></th:block>
+
+      <div class="card">
+        <div class="card-body">
+          <table class="data-table">
+            <thead><tr><th>Employee #</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th></th></tr></thead>
+            <tbody>
+              <tr th:each="u : ${users}">
+                <td th:text="${u.employeeNumber} ?: '—'">EMP</td>
+                <td th:text="${u.firstName} + ' ' + ${u.lastName}">Name</td>
+                <td th:text="${u.email}">Email</td>
+                <td th:text="${u.roleName}">Role</td>
+                <td>
+                  <span th:if="${u.isLocked}" class="status-badge status-locked">Locked</span>
+                  <span th:unless="${u.isLocked}" class="status-badge" th:classappend="${u.isActive} ? 'status-active' : 'status-inactive'" th:text="${u.isActive} ? 'Active' : 'Inactive'">Status</span>
+                </td>
+                <td th:text="${u.lastLoginAt} ?: 'Never'">Last login</td>
+                <td class="table-actions">
+                  <a class="btn btn-sm btn-outline btn-icon" th:href="@{/users/{id}/edit(id=${u.id})}" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                  <form th:if="${u.isLocked}" th:action="@{/users/{id}/unlock(id=${u.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-outline btn-icon" title="Unlock"><i class="fa-solid fa-unlock"></i></button>
+                  </form>
+                  <form th:unless="${u.isLocked}" th:action="@{/users/{id}/lock(id=${u.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-outline btn-icon" title="Lock"><i class="fa-solid fa-lock"></i></button>
+                  </form>
+                  <form th:action="@{/users/{id}/delete(id=${u.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-outline btn-icon" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

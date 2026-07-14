@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="data-theme=${theme}, dir=${dir}">
+<head>
+<title>Add Expense — ProTech One</title>
+<th:block th:replace="~{fragments/layout :: headAssets}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{fragments/layout :: shellToggles}"></th:block>
+<div class="app-shell" id="appShell">
+  <th:block th:replace="~{fragments/layout :: sidebar(active='expenses')}"></th:block>
+  <th:block th:replace="~{fragments/layout :: sidebarBackdrop}"></th:block>
+  <div class="main-wrap">
+    <th:block th:replace="~{fragments/layout :: topbar}"></th:block>
+    <div class="content">
+      <div class="page-header"><div><h2>Add Expense</h2></div></div>
+
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header"><h6>Quick add category</h6></div>
+        <div class="card-body">
+          <form th:action="@{/expenses/category}" method="post" style="display:flex;gap:8px;">
+            <input type="text" name="name" class="form-control" placeholder="Category name" required style="max-width:280px;"/>
+            <button type="submit" class="btn btn-outline btn-sm">Add Category</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card" style="max-width:560px;">
+        <div class="card-body">
+          <form th:action="@{/expenses}" th:object="${form}" method="post">
+            <div class="form-row cols-2">
+              <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-control" th:field="*{expenseDate}"/></div>
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-control" th:field="*{categoryId}">
+                  <option value="">Uncategorized</option>
+                  <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}">Category</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group"><label class="form-label">Payee</label><input class="form-control" th:field="*{payee}"/></div>
+            <div class="form-row cols-2">
+              <div class="form-group"><label class="form-label">Amount *</label><input type="number" step="0.01" class="form-control" th:field="*{amount}" required/></div>
+              <div class="form-group">
+                <label class="form-label">Payment Method</label>
+                <select class="form-control" th:field="*{paymentMethod}"><option>CASH</option><option>BANK</option><option>CARD</option><option>CHEQUE</option></select>
+              </div>
+            </div>
+            <div class="form-group"><label class="form-label">Reference No.</label><input class="form-control" th:field="*{referenceNo}"/></div>
+            <div class="form-group"><label class="form-label">Notes</label><textarea class="form-control" rows="2" th:field="*{notes}"></textarea></div>
+
+            <div class="page-actions">
+              <button type="submit" class="btn btn-primary">Save Expense</button>
+              <a th:href="@{/expenses}" class="btn btn-outline">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

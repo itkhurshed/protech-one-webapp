@@ -1,0 +1,19 @@
+/* ============================================================================
+   RTL (Arabic) support. Applied when <html dir="rtl">.
+   Flips the sidebar to the right and mirrors spacing/icons.
+   ============================================================================ */
+
+html[dir="rtl"] body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
+
+html[dir="rtl"] .sidebar { left: auto; right: 0; border-right: none; border-left: 1px solid var(--border); }
+html[dir="rtl"] .main-wrap { margin-left: 0; margin-right: var(--sidebar-width); }
+html[dir="rtl"] .app-shell.sidebar-collapsed .main-wrap { margin-right: var(--sidebar-collapsed-width); margin-left: 0; }
+
+html[dir="rtl"] .topbar-search i { left: auto; right: 14px; }
+html[dir="rtl"] .topbar-search input { padding: 9px 38px 9px 14px; }
+html[dir="rtl"] .home-search i { left: auto; right: 20px; }
+html[dir="rtl"] .home-search input { padding: 16px 50px 16px 20px; }
+
+html[dir="rtl"] .nav-item { flex-direction: row-reverse; text-align: right; }
+html[dir="rtl"] .badge-dot { right: auto; left: 4px; }
+html[dir="rtl"] .recent-tx-icon { margin-right: 0; margin-left: 10px; }
